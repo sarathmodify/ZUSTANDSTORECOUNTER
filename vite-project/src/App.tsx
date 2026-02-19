@@ -1,23 +1,40 @@
-import {counterStore} from '../src/store/useCounterStore';
+import { useAuthStore } from './store/useAuthStore';
+import { useThemeStore } from './store/useThemeStore';
+import LoginPage from './components/LoginPage';
+import Header from './components/Header';
+import TodoForm from './components/TodoForm';
+import TodoList from './components/TodoList';
+import SearchBar from './components/SearchBar';
+import FilterBar from './components/FilterBar';
+import StatsPanel from './components/StatsPanel';
 
 function App() {
-  
-  const countValue = counterStore((state) => state.count);  
+  const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
+  const darkMode = useThemeStore((state) => state.darkMode);
 
-  console.log('countValue: ', countValue);
+  // Show login page if not authenticated
+  if (!isLoggedIn) {
+    return (
+      <div className={`app-container ${darkMode ? 'dark' : ''}`}>
+        <LoginPage />
+      </div>
+    );
+  }
 
   return (
-   <div>
-     <h1>counter: {countValue}</h1>
-     <button onClick={counterStore.getState().increment}>
-        Increment
-     </button>
-     <button onClick={counterStore.getState().decrement}>
-        Decrement
-     </button>
-     <button onClick={counterStore.getState().reset}>reset</button>
-   </div>
-  )
+    <div className={`app-container ${darkMode ? 'dark' : ''}`}>
+      <div className="dashboard">
+        <Header />
+        <StatsPanel />
+        <TodoForm />
+        <div className="toolbar">
+          <SearchBar />
+          <FilterBar />
+        </div>
+        <TodoList />
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
